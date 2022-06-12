@@ -1,0 +1,20 @@
+service: series-api
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  deploymentMethod: direct
+  region: eu-central-1
+
+functions:
+  create:
+    handler: src/create.handler
+    description: Creates a serie
+    events:
+      - http:
+          method: post
+          path: series
+
+plugins:
+  - serverless-esbuild
