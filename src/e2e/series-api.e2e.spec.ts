@@ -24,7 +24,7 @@ describe("series-api e2e", () => {
       .catch((e: AxiosError) => ({ status: e.response?.status }));
     expect(conflictResponse.status).toEqual(409);
   });
-  it("should create, list", async () => {
+  it("should create, list, delete", async () => {
     const request: CreateRequest = {
       network: randomName(),
       title: randomName(),
@@ -46,6 +46,17 @@ describe("series-api e2e", () => {
     const getresponse = await axios.get(`${baseUrl}/series/${request.network}`);
     expect(getresponse.status).toEqual(200);
     expect(getresponse.data.series).toHaveLength(1);
+
+    const deleteresponse = await axios.delete(
+      `${baseUrl}/series/${request.network}/${request.title}`
+    );
+    expect(deleteresponse.status).toEqual(200);
+
+    const getresponsetwo = await axios.get(
+      `${baseUrl}/series/${request.network}`
+    );
+    expect(getresponsetwo.status).toEqual(200);
+    expect(getresponsetwo.data.series).toHaveLength(0);
   });
 });
 

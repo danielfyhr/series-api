@@ -6,7 +6,6 @@ const dynamoClient = new DocumentClient();
 const tableName = process.env.table ?? "";
 
 export const handler = async (event: APIGatewayEvent) => {
-  console.log("hello world from create handler");
   const input = parseInput(event.body ?? "{}");
   if (input == null) {
     return { statusCode: 400 };
@@ -46,8 +45,8 @@ function parseInput(body: string): CreateRequest | undefined {
     if (
       request &&
       request.network &&
-      request.description &&
       request.title &&
+      request.description &&
       request.rating
     ) {
       return {

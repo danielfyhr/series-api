@@ -38,6 +38,21 @@ functions:
           - dynamodb:Query
         Resource:
           - Fn::GetAtt: [seriesTable, Arn]
+  delete:
+    handler: src/delete.handler
+    events:
+      - http:
+          method: delete
+          path: series/{network}/{title}
+    description: Deletes a serie
+    environment:
+      table: !Ref seriesTable
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - dynamodb:DeleteItem
+        Resource:
+          - Fn::GetAtt: [seriesTable, Arn]
 
 plugins:
   - serverless-esbuild
