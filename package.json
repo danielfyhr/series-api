@@ -4,6 +4,7 @@
   "author": "Daniel Fyhr",
   "scripts": {
     "deploy:dev": "serverless deploy",
+    "deploy:prod": "serverless deploy --stage=prod",
     "e2e": "jest --config jest.e2e.config.js"
   },
   "devDependencies": {
