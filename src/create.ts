@@ -1,5 +1,9 @@
 import { APIGatewayEvent } from "aws-lambda";
 import { CreateRequest } from "./create.request";
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
+
+const dynamoClient = new DocumentClient();
+const tableName = process.env.table ?? "";
 
 export const handler = async (event: APIGatewayEvent) => {
   console.log("hello world from create handler");
@@ -14,9 +18,25 @@ export const handler = async (event: APIGatewayEvent) => {
     rating: input.rating,
   };
 
-  return {
-    body: JSON.stringify({ serie }),
-  };
+  try {
+    await dynamoClient
+      .put({
+        TableName: tableName,
+        Item: serie,
+        ConditionExpression:
+          "attribute_not_exists(network) and attribute_not_exists(title)",
+      })
+      .promise();
+    return { body: JSON.stringify({ serie }) };
+  } catch (error: any) {
+    if (error.code === "ConditionalCheckFailedException") {
+      return {
+        statusCode: 409,
+        body: JSON.stringify({ message: "Serie already exists" }),
+      };
+    }
+    throw error;
+  }
 };
 
 function parseInput(body: string): CreateRequest | undefined {

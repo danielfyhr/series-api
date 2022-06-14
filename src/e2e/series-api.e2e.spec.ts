@@ -5,8 +5,8 @@ describe("series-api e2e", () => {
   const baseUrl = process.env.SERIES_URL;
   it("should respond 200 on POST to /series", async () => {
     const request: CreateRequest = {
-      network: "someflix",
-      title: "My favorite E2E",
+      network: randomName(),
+      title: randomName(),
       description: "Action packed",
       rating: 5,
     };
@@ -29,4 +29,30 @@ describe("series-api e2e", () => {
       .catch((e: AxiosError) => ({ status: e.response?.status }));
     expect(response.status).toEqual(400);
   });
+  it("should respond 409 on POST to /series with existing serie", async () => {
+    const request: CreateRequest = {
+      network: randomName(),
+      title: randomName(),
+      description: "Action packed",
+      rating: 5,
+    };
+    const response = await axios.post(`${baseUrl}/series`, request);
+    expect(response.status).toEqual(200);
+    const conflictResponse = await axios
+      .post(`${baseUrl}/series`, request)
+      .catch((e: AxiosError) => ({ status: e.response?.status }));
+    expect(conflictResponse.status).toEqual(409);
+  });
 });
+
+function randomName() {
+  return new Array(30)
+    .fill("")
+    .map(() => randomLetter())
+    .join("");
+}
+function randomLetter() {
+  const letters = "abcdefghijklmnopqrstuvwxyz".split("");
+  const randomIndex = Math.round(Math.random() * letters.length);
+  return letters[randomIndex];
+}
