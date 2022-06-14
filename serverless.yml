@@ -6,6 +6,7 @@ provider:
   runtime: nodejs16.x
   deploymentMethod: direct
   region: eu-central-1
+  logRetentionInDays: 1
 
 functions:
   create:
