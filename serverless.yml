@@ -38,6 +38,21 @@ functions:
           - dynamodb:Query
         Resource:
           - Fn::GetAtt: [seriesTable, Arn]
+  update:
+    handler: src/update.handler
+    events:
+      - http:
+          method: put
+          path: series/{network}/{title}
+    description: Updates a serie
+    environment:
+      table: !Ref seriesTable
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - dynamodb:UpdateItem
+        Resource:
+          - Fn::GetAtt: [seriesTable, Arn]
   delete:
     handler: src/delete.handler
     events:

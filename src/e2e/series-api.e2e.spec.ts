@@ -24,7 +24,7 @@ describe("series-api e2e", () => {
       .catch((e: AxiosError) => ({ status: e.response?.status }));
     expect(conflictResponse.status).toEqual(409);
   });
-  it("should create, list, delete", async () => {
+  it("should create, list, update, delete", async () => {
     const request: CreateRequest = {
       network: randomName(),
       title: randomName(),
@@ -32,10 +32,10 @@ describe("series-api e2e", () => {
       rating: 5,
     };
 
-    const postresponse = await axios.post(`${baseUrl}/series`, request);
-    const serie = postresponse.data.serie;
+    const postResponse = await axios.post(`${baseUrl}/series`, request);
+    const serie = postResponse.data.serie;
 
-    expect(postresponse.status).toEqual(200);
+    expect(postResponse.status).toEqual(200);
     expect(serie).toEqual({
       network: request.network,
       title: request.title,
@@ -43,20 +43,35 @@ describe("series-api e2e", () => {
       rating: request.rating,
     });
 
-    const getresponse = await axios.get(`${baseUrl}/series/${request.network}`);
-    expect(getresponse.status).toEqual(200);
-    expect(getresponse.data.series).toHaveLength(1);
+    const getResponse = await axios.get(`${baseUrl}/series/${request.network}`);
+    expect(getResponse.status).toEqual(200);
+    expect(getResponse.data.series).toHaveLength(1);
+
+    const updateResponse = await axios.put(
+      `${baseUrl}/series/${request.network}/${request.title}`,
+      { description: "updated description" }
+    );
+    expect(updateResponse.status).toEqual(200);
+
+    const getResponseUpdated = await axios.get(
+      `${baseUrl}/series/${request.network}`
+    );
+    expect(getResponseUpdated.status).toEqual(200);
+    expect(getResponseUpdated.data.series).toHaveLength(1);
+    expect(getResponseUpdated.data.series[0].description).toEqual(
+      "updated description"
+    );
 
     const deleteresponse = await axios.delete(
       `${baseUrl}/series/${request.network}/${request.title}`
     );
     expect(deleteresponse.status).toEqual(200);
 
-    const getresponsetwo = await axios.get(
+    const getResponseAllClear = await axios.get(
       `${baseUrl}/series/${request.network}`
     );
-    expect(getresponsetwo.status).toEqual(200);
-    expect(getresponsetwo.data.series).toHaveLength(0);
+    expect(getResponseAllClear.status).toEqual(200);
+    expect(getResponseAllClear.data.series).toHaveLength(0);
   });
 });
 

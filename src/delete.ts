@@ -12,10 +12,7 @@ export const handler = async (event: APIGatewayEvent) => {
     return { statusCode: 400 };
   }
   await dynamoClient
-    .delete({
-      TableName: tableName,
-      Key: { network, title },
-    })
+    .delete({ TableName: tableName, Key: { network, title } })
     .promise();
   return { statusCode: 200 };
 };
