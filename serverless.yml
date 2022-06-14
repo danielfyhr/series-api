@@ -23,6 +23,21 @@ functions:
           - dynamodb:PutItem
         Resource:
           - Fn::GetAtt: [seriesTable, Arn]
+  list:
+    handler: src/list.handler
+    events:
+      - http:
+          method: get
+          path: series/{network}
+    description: Lists series for a network
+    environment:
+      table: !Ref seriesTable
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::GetAtt: [seriesTable, Arn]
 
 plugins:
   - serverless-esbuild

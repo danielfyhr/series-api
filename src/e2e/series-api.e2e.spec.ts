@@ -3,25 +3,6 @@ import { CreateRequest } from "../create.request";
 
 describe("series-api e2e", () => {
   const baseUrl = process.env.SERIES_URL;
-  it("should respond 200 on POST to /series", async () => {
-    const request: CreateRequest = {
-      network: randomName(),
-      title: randomName(),
-      description: "Action packed",
-      rating: 5,
-    };
-
-    const response = await axios.post(`${baseUrl}/series`, request);
-    const serie = response.data.serie;
-
-    expect(response.status).toEqual(200);
-    expect(serie).toEqual({
-      network: request.network,
-      title: request.title,
-      description: request.description,
-      rating: request.rating,
-    });
-  });
 
   it("should respond 400 on POST to /series with invalid data", async () => {
     const response = await axios
@@ -42,6 +23,29 @@ describe("series-api e2e", () => {
       .post(`${baseUrl}/series`, request)
       .catch((e: AxiosError) => ({ status: e.response?.status }));
     expect(conflictResponse.status).toEqual(409);
+  });
+  it("should create, list", async () => {
+    const request: CreateRequest = {
+      network: randomName(),
+      title: randomName(),
+      description: "Action packed",
+      rating: 5,
+    };
+
+    const postresponse = await axios.post(`${baseUrl}/series`, request);
+    const serie = postresponse.data.serie;
+
+    expect(postresponse.status).toEqual(200);
+    expect(serie).toEqual({
+      network: request.network,
+      title: request.title,
+      description: request.description,
+      rating: request.rating,
+    });
+
+    const getresponse = await axios.get(`${baseUrl}/series/${request.network}`);
+    expect(getresponse.status).toEqual(200);
+    expect(getresponse.data.series).toHaveLength(1);
   });
 });
 
