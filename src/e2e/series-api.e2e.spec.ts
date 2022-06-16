@@ -10,7 +10,7 @@ describe("series-api e2e", () => {
       .catch((e: AxiosError) => ({ status: e.response?.status }));
     expect(response.status).toEqual(400);
   });
-  it("should respond 409 on POST to /series with existing serie", async () => {
+  it("should respond 409 on POST to /series with existing series", async () => {
     const request: CreateRequest = {
       network: randomName(),
       title: randomName(),
@@ -33,10 +33,10 @@ describe("series-api e2e", () => {
     };
 
     const postResponse = await axios.post(`${baseUrl}/series`, request);
-    const serie = postResponse.data.serie;
+    const series = postResponse.data.series;
 
     expect(postResponse.status).toEqual(200);
-    expect(serie).toEqual({
+    expect(series).toEqual({
       network: request.network,
       title: request.title,
       description: request.description,

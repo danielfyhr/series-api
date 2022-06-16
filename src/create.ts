@@ -10,7 +10,7 @@ export const handler = async (event: APIGatewayEvent) => {
   if (input == null) {
     return { statusCode: 400 };
   }
-  const serie = {
+  const series = {
     network: input.network,
     title: input.title,
     description: input.description,
@@ -21,17 +21,17 @@ export const handler = async (event: APIGatewayEvent) => {
     await dynamoClient
       .put({
         TableName: tableName,
-        Item: serie,
+        Item: series,
         ConditionExpression:
           "attribute_not_exists(network) and attribute_not_exists(title)",
       })
       .promise();
-    return { body: JSON.stringify({ serie }) };
+    return { body: JSON.stringify({ series }) };
   } catch (error: any) {
     if (error.code === "ConditionalCheckFailedException") {
       return {
         statusCode: 409,
-        body: JSON.stringify({ message: "Serie already exists" }),
+        body: JSON.stringify({ message: "Series already exists" }),
       };
     }
     throw error;

@@ -15,7 +15,7 @@ functions:
       - http:
           method: post
           path: series
-    description: Creates a serie
+    description: Creates a series
     environment:
       table: !Ref seriesTable
     iamRoleStatements:
@@ -45,7 +45,7 @@ functions:
       - http:
           method: put
           path: series/{network}/{title}
-    description: Updates a serie
+    description: Updates a series
     environment:
       table: !Ref seriesTable
     iamRoleStatements:
@@ -60,7 +60,7 @@ functions:
       - http:
           method: delete
           path: series/{network}/{title}
-    description: Deletes a serie
+    description: Deletes a series
     environment:
       table: !Ref seriesTable
     iamRoleStatements:
